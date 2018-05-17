@@ -9,11 +9,8 @@ import javax.persistence.Persistence;
 
 import daojpa.CityDaoJpa;
 import daojpa.MonumentDaoJpa;
+import daojpa.UserDaoJpa;
 
-/**
- * Hello world!
- *
- */
 public class App implements AutoCloseable {
 	private static final String PERSITENCE_UNIT_NAME = "demo-jpa-1";
 	private EntityManagerFactory entityManagerFactory;
@@ -25,17 +22,6 @@ public class App implements AutoCloseable {
 
 	public static void main(String[] args) {
 		System.out.println("Hello JPA Demo");
-
-//		User user1 = new User("Stephane");
-//		User user2 = new User("Fabien");
-//		User user3 = new User("Fred");
-//		user1.addMonument(monument1);
-//		user1.addMonument(monument3);
-//		user1.addMonument(monument2);
-//		user2.addMonument(monument3);
-//		user2.addMonument(monument2);
-//		user3.addMonument(monument3);
-		//Long searchedId = 2L;
  		
 		try (App app = new App()) {
 			EntityManager em = app.entityManagerFactory.createEntityManager();
@@ -43,78 +29,89 @@ public class App implements AutoCloseable {
 			
 			//creation d'une ville
 			
-			
-			
 			CityDaoJpa cityDaoJpa = new CityDaoJpa(em);
 			City city1 = new City("Atlantis", 0, 0);
-			cityDaoJpa.createCity(city1);
+			cityDaoJpa.create(city1);
 			System.out.println("A la création \n" + city1);
 			
 			
 			City city2 = new City("New York", 0, 0);
-			cityDaoJpa.createCity(city2);
+			cityDaoJpa.create(city2);
 			System.out.println("A la création \n" + city2);
-			
-			
 			
 			//Update d'une ville
 			
 			city1.setName("Paris");
 			city1.setLatitude(10.);
 			city1.setLongitude(5.);
-			cityDaoJpa.updateCity(city1);
+			cityDaoJpa.update(city1);
 			System.out.println("A la modification \n" + city1);
 			
 			//lecture d'un enregistrement Table ville
 			
 			Long  myCityId = city1.getId();
-			System.out.println("lecture d'un enregistrement \n" + cityDaoJpa.getCityById(myCityId));
+			System.out.println("lecture d'un enregistrement \n" + cityDaoJpa.getById(myCityId));
 			
 			//creation d'un monument
 			
 			MonumentDaoJpa monumentDaoJpa = new MonumentDaoJpa(em);
 			Monument monument1 = new Monument("Tour Eiffel", city1);
-			monumentDaoJpa.createMonument(monument1);
+			monumentDaoJpa.create(monument1);
 			System.out.println("A la création \n" + monument1);
+			
+			Monument monument2 = new Monument("Concorde", city2);
+			monumentDaoJpa.create(monument2);
 			
 			//Update d'un monument
 			
 			monument1.setName("Statue de la liberté");
 			monument1.setCity(city2);
-			monumentDaoJpa.updateMonument(monument1);
+			monumentDaoJpa.update(monument1);
 			System.out.println("A la modification \n" + monument1);
 			
 			//lecture d'un enregistrement Table monument
 			
 			Long myMonumentId = monument1.getId();
-			System.out.println("lecture d'un enregistrement \n" + monumentDaoJpa.getMonumentById(myMonumentId));
+			System.out.println("lecture d'un enregistrement \n" + monumentDaoJpa.getById(myMonumentId));
+			
+			//creation d'un user
+			
+			UserDaoJpa userDaoJpa = new UserDaoJpa(em);
+			User user1 = new User("Robert");
+			user1.addMonument(monument1);
+			userDaoJpa.create(user1);
+			System.out.println("A la création \n" + user1);
+			
+			User user2 = new User("Louis");
+			user2.addMonument(monument2);
+			userDaoJpa.create(user2);
+			
+			//Update d'un user
+			
+			user1.setName("Michel");
+			userDaoJpa.update(user1);
+			System.out.println("A la modification \n" + user1);
+			
+			//lecture d'un enregistrement Table users
+			
+			Long myUserId = user1.getId();
+			System.out.println("lecture d'un enregistrement \n" + userDaoJpa.getById(myUserId));
+			
+			//Suppression d'un user par son Id
+			
+			userDaoJpa.deleteById(myUserId);
 			
 			//Suppression d'un monument par son Id
 			
-			monumentDaoJpa.deleteMonumentById(myMonumentId);
+			monumentDaoJpa.deleteById(myMonumentId);
 			
 			//Suppression d'une ville par Id
 			
-			cityDaoJpa.deleteCityById(myCityId);      
+			cityDaoJpa.deleteById(myCityId);      
 			
 			em.getTransaction().commit();
 			em.close();
-//			System.out.println(app.createCity(city1));
-//			System.out.println(app.createCity(city2));
-//			System.out.println(app.createCity(city3));
-//			
-//			System.out.println(app.createMonument(monument1));
-//			System.out.println(app.createMonument(monument2));
-//			System.out.println(app.createMonument(monument3));
-//			
-//			System.out.println(app.createUser(user1));
-//			System.out.println(app.createUser(user2));
-//			System.out.println(app.createUser(user3));
-//			
-//			app.readCity();				
-//			
-//			System.out.println();
-//			
+		
 		} catch (Exception e) {
 			System.out.println(e);
 		}
@@ -149,7 +146,6 @@ public class App implements AutoCloseable {
 		return entityManagerFactory;
 	}
 
-
 	public User createUser(User user) {
 	    EntityManager em= entityManagerFactory.createEntityManager();
 	    user= create(em, user);
@@ -163,6 +159,4 @@ public class App implements AutoCloseable {
 	    return user;
 	}
 	
-	
-
 }
