@@ -19,7 +19,7 @@ public class App implements AutoCloseable {
 		entityManagerFactory = createEntityManagerFactory();
 
 	}
-
+ 
 	public static void main(String[] args) {
 		System.out.println("Hello JPA Demo");
  		
