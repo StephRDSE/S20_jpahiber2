@@ -146,17 +146,5 @@ public class App implements AutoCloseable {
 		return entityManagerFactory;
 	}
 
-	public User createUser(User user) {
-	    EntityManager em= entityManagerFactory.createEntityManager();
-	    user= create(em, user);
-	    em.close();
-	    return user;
-	}
-	public User create(EntityManager em, User user) {
-	    em.getTransaction().begin();
-	    em.persist(user);
-	    em.getTransaction().commit();
-	    return user;
-	}
 	
 }
