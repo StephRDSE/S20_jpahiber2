@@ -11,10 +11,15 @@ import javax.persistence.Id;
 import javax.persistence.JoinTable;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "USERS")
+@NamedQueries({
+	@NamedQuery(name = "User.findAll", query = " SELECT u FROM User u ORDER BY u.name "),
+	@NamedQuery(name = "User.deleteById", query = " DELETE FROM User u WHERE u.id = :id") })
 public class User {
 
 	@Id
@@ -73,7 +78,7 @@ public class User {
 	}
 
 	public String toString() {
-		return "User :{ id= " + id + "\n name= " + name + "\n nb momunents" + monuments.size() + "\n}";
+		return "id= " + id + " name= " + name + " à visité " + monuments.size() + " momunents";
 	}
 
 }

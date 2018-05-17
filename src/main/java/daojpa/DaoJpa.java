@@ -1,6 +1,11 @@
 package daojpa;
 
+
+
+import java.util.List;
+
 import javax.persistence.EntityManager;
+
 
 
 public abstract class DaoJpa<T> {
@@ -31,5 +36,12 @@ public abstract class DaoJpa<T> {
 		em.remove(getById(id));		
 	
 	}
+	
+	public List<T> findAll(int first, int size) {
+	    return em.createNamedQuery(objClass.getSimpleName() + ".findAll", objClass)
+		  .setFirstResult(first).setMaxResults(size).getResultList();
+	}
+
+	
 	
 }

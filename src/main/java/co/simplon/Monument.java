@@ -3,6 +3,7 @@ package co.simplon;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -13,11 +14,16 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "MONUMENTS")
+@NamedQueries({
+	@NamedQuery(name = "Monument.findAll", query = " SELECT m FROM Monument m ORDER BY m.name "),
+	@NamedQuery(name = "Monument.deleteById", query = " DELETE FROM Monument m WHERE m.id = :id") })
 public class Monument {
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "monument_seq")
@@ -29,7 +35,7 @@ public class Monument {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "fk_cities_id", foreignKey= @ForeignKey(name = "fk_cities_id"))
 	private City city;
-	@ManyToMany(mappedBy="monuments")
+	@ManyToMany(mappedBy="monuments",cascade = CascadeType.ALL)
 	private Set<User> users = new HashSet<User>();
 
 	public Monument() {

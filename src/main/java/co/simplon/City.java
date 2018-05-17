@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 //import java.util.Set;
 
+import javax.persistence.CascadeType;
 //import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,12 +12,19 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "CITIES")
+
+@NamedQueries({
+	@NamedQuery(name = "City.findAll", query = " SELECT c FROM City c ORDER BY c.name "),
+	@NamedQuery(name = "City.deleteById", query = " DELETE FROM City c WHERE c.id = :id") })
+
 public class City {
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "city_seq")
@@ -29,10 +37,11 @@ public class City {
 	private Double latitude;
 	@Column(name = "Longitude", nullable = false)
 	private Double longitude;
-	@OneToMany(mappedBy = "city")
+	@OneToMany(mappedBy = "city", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Monument> monuments = new ArrayList<Monument>();
 	/*@OneToMany(mappedBy = "city", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	private Set<Monument> monuments;*/
+	
 	
 	public City() {
 	}
